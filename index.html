@@ -618,7 +618,7 @@
             <div>
                 <input type="text" class="config-input" id="airtable-api-key" placeholder="Votre clé API Airtable" />
                 <input type="text" class="config-input" id="airtable-base-id" placeholder="ID de votre base Airtable" />
-                <input type="text" class="config-input" id="airtable-table-name" placeholder="Nom de la table (ex: Consultants)" value="Consultants" />
+                <input type="text" class="config-input" id="airtable-table-name" placeholder="Nom de la table" value="Candidats" />
             </div>
             
             <button class="config-button" onclick="saveAirtableConfig()">💾 Sauvegarder Configuration</button>
@@ -704,7 +704,7 @@
         let AIRTABLE_CONFIG = {
             apiKey: '',
             baseId: '',
-            tableName: 'Consultants'
+            tableName: 'Candidats'
         };
 
         // Vérifier si les variables d'environnement sont définies (via Vercel)
@@ -811,32 +811,68 @@
         // Mapper les données Airtable vers le format consultant
         function mapAirtableToConsultant(record) {
             const fields = record.fields;
+            
+            // Déterminer la stack technique basée sur le poste et les compétences
+            let stack = 'fullstack';
+            const poste = (fields.Poste || '').toLowerCase();
+            const competences = (fields.Competences || '').toLowerCase();
+            
+            if (poste.includes('front') || competences.includes('react') || competences.includes('angular') || competences.includes('vue')) {
+                stack = 'frontend';
+            } else if (poste.includes('back') || competences.includes('node') || competences.includes('java') || competences.includes('python')) {
+                stack = 'backend';
+            } else if (poste.includes('devops') || competences.includes('aws') || competences.includes('azure') || competences.includes('docker')) {
+                stack = 'devops';
+            } else if (poste.includes('mobile') || competences.includes('android') || competences.includes('ios') || competences.includes('flutter')) {
+                stack = 'mobile';
+            } else if (poste.includes('data') || competences.includes('python') || competences.includes('machine learning') || competences.includes('analytics')) {
+                stack = 'data';
+            }
+            
+            // Déterminer la disponibilité basée sur le statut
+            let disponibilite = 'immediate';
+            let statusClass = 'status-available';
+            const statut = (fields.Statut || '').toLowerCase();
+            
+            if (statut.includes('occupé') || statut.includes('busy') || statut.includes('en mission')) {
+                disponibilite = '3months';
+                statusClass = 'status-busy';
+            } else if (statut.includes('bientôt') || statut.includes('soon') || statut.includes('1 mois')) {
+                disponibilite = '1month';
+            }
+            
+            // Extraire les spécialités des compétences
+            const specialites = [];
+            if (fields.Competences) {
+                const comps = fields.Competences.split(',');
+                if (comps.length > 0) specialites.push({ icon: '⭐', titre: 'Expertise', desc: comps[0].trim() });
+                if (comps.length > 1) specialites.push({ icon: '🚀', titre: 'Spécialité', desc: comps[1].trim() });
+                if (comps.length > 2) specialites.push({ icon: '🎯', titre: 'Compétence', desc: comps[2].trim() });
+            }
+            
             return {
                 id: record.id,
-                nom: fields.Nom || 'Non spécifié',
-                email: fields.Email || '',
+                nom: `${fields.Prenom || ''} ${fields.Nom || ''}`.trim(),
+                email: fields.Courriel || '',
                 telephone: fields.Telephone || '',
-                role: fields.Role || 'Développeur',
+                role: fields.Poste || 'Développeur',
                 experience: fields.Experience || 'Non spécifié',
-                stack: fields.Stack || 'fullstack',
+                stack: stack,
                 level: fields.Niveau || 'senior',
                 location: fields.Localisation || 'remote',
-                availability: fields.Disponibilite || 'immediate',
-                competences: fields.Competences ? fields.Competences.split(',') : [],
-                specialites: fields.Specialites ? fields.Specialites.split(';').map(s => {
-                    const parts = s.split(':');
-                    return { icon: parts[0] || '⭐', titre: parts[1] || 'Spécialité', desc: parts[2] || '' };
-                }) : [],
+                availability: disponibilite,
+                competences: fields.Competences ? fields.Competences.split(',').map(c => c.trim()) : [],
+                specialites: specialites,
                 details: [
-                    { icon: '💰', text: fields.TJM || '600-800€/jour' },
-                    { icon: '🏢', text: fields.TypeContrat || 'CDI/Freelance' },
+                    { icon: '💰', text: fields.TJM_Souhaite || '600-800€/jour' },
+                    { icon: '🏢', text: 'CDI/Freelance' },
                     { icon: '📍', text: fields.Localisation || 'Remote' },
-                    { icon: '🎓', text: fields.Certifications || 'Certifications' }
+                    { icon: '🎓', text: fields.Formation || 'Formation en informatique' }
                 ],
-                disponibilite: fields.DisponibiliteText || 'Disponible',
-                statusClass: fields.Disponible ? 'status-available' : 'status-busy',
-                rating: fields.Rating || '4.8',
-                reviews: fields.Reviews || '15'
+                disponibilite: fields.Statut || 'Disponible',
+                statusClass: statusClass,
+                rating: '4.8',
+                reviews: '15'
             };
         }
 
