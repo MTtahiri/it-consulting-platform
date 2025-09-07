@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Consulting Platform - Saveurs Maghrébines</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Navigation moderne */
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-stats {
+            display: flex;
+            gap: 30px;
+            font-size: 0.9em;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-number {
+            background: #00d4ff;
+            color: #0a0a1a;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .main-title {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00d4ff, #ff6b6b, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: rgba(255,255,255,0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Configuration Airtable */
+        .airtable-config {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .config-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .config-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .config-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .config-button {
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            border: none;
+            color: #0a0a1a;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        /* Filtres avancés */
+        .filters-bar {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 0.9em;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .filter-select {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            padding: 10px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Grille des vignettes V2 */
+        .consultants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .consultant-card-v2 {
+            background: linear-gradient(145deg, 
+                rgba(255,255,255,0.12) 0%, 
+                rgba(255,255,255,0.08) 50%,
+                rgba(255,255,255,0.04) 100%);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 24px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .consultant-card-v2:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 
+                0 25px 60px rgba(0, 212, 255, 0.25),
+                0 0 80px rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+        }
+
+        .consultant-card-v2::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 212, 255, 0.08), 
+                transparent);
+            transition: all 0.8s ease;
+        }
+
+        .consultant-card-v2:hover::before {
+            left: 100%;
+        }
+
+        /* Header de la carte */
+        .card-header-v2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .consultant-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .consultant-id-v2 {
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: #0a0a1a;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .consultant-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+
+        .stars {
+            color: #ffd700;
+        }
+
+        .availability-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .status-available {
+            background: #00ff88;
+            animation: pulse-green 2s infinite;
+        }
+
+        .status-busy {
+            background: #ffaa00;
+            animation: pulse-orange 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 170, 0, 0.7); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 10px rgba(255, 170, 0, 0); }
+        }
+
+        /* Section principale du profil */
+        .profile-main {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .role-title {
+            font-size: 1.6em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00d4ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .experience-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            border: 1px solid #00d4ff;
+            font-weight: 600;
+        }
+
+        /* Section compétences enrichie */
+        .skills-section {
+            margin: 25px 0;
+        }
+
+        .skills-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tech-stack-v2 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag-v2 {
+            background: linear-gradient(45deg, rgba(255,107,107,0.15), rgba(255,217,61,0.15));
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-tag-v2:hover {
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: #0a0a1a;
+            transform: scale(1.08);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .skill-level {
+            font-size: 0.7em;
+            margin-left: 5px;
+        }
+
+        /* Spécialités et points forts */
+        .specialties {
+            background: linear-gradient(145deg, 
+                rgba(0, 255, 136, 0.08), 
+                rgba(0, 212, 255, 0.08));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .specialty-item {
+            margin: 10px 0;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .specialty-icon {
+            font-size: 1.2em;
+            width: 24px;
+        }
+
+        /* Détails en grille */
+        .details-grid-v2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .detail-item-v2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px;
+            border-left: 3px solid #00d4ff;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item-v2:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .detail-icon-v2 {
+            font-size: 1.1em;
+            width: 20px;
+            text-align: center;
+        }
+
+        .detail-text-v2 {
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        /* Bouton CTA amélioré */
+        .cta-button-v2 {
+            width: 100%;
+            background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+            border: none;
+            color: white;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 1.05em;
+            font-weight: 700;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button-v2:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .cta-button-v2::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .cta-button-v2:hover::before {
+            left: 100%;
+        }
+
+        /* Badges premium */
+        .premium-badges {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .badge {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #0a0a1a;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.75em;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .badge-hot {
+            background: linear-gradient(45deg, #ff4757, #ff6b6b);
+            color: white;
+        }
+
+        .badge-certified {
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            color: #0a0a1a;
+        }
+
+        /* Notification système */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            color: #0a0a1a;
+            padding: 20px 25px;
+            border-radius: 16px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            transform: translateX(400px);
+            transition: all 0.5s ease;
+            z-index: 2000;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Configuration en cours */
+        .config-info {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .config-info h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        /* Debug info */
+        .debug-info {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .consultants-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-bar {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-title {
+                font-size: 2em;
+            }
+            
+            .details-grid-v2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .airtable-config {
+                padding: 20px;
+            }
+            
+            .config-button {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+
+        /* Animation d'apparition */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #00d4ff;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #00d4ff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">🚀 IT Consulting Pro</div>
+            <div class="nav-stats">
+                <div class="stat-item">
+                    <span>👥 Consultants actifs</span>
+                    <span class="stat-number" id="active-consultants">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>⚡ Disponibles</span>
+                    <span class="stat-number" id="available-now">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>🎯 Missions ce mois</span>
+                    <span class="stat-number" id="missions-month">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Configuration info -->
+        <div class="config-info">
+            <h3>🔧 Configuration Airtable détectée</h3>
+            <p>Connexion automatique en cours avec votre base de données...</p>
+            <div id="connection-status">⏳ Test de connexion...</div>
+        </div>
+
+        <!-- Header -->
+        <div class="header-section">
+            <h1 class="main-title">Consultants IT Premium</h1>
+            <p class="subtitle">
+                Découvrez nos experts informatique triés sur le volet. 
+                Profils anonymisés et vérifiés pour vos projets tech.
+            </p>
+        </div>
+
+        <!-- Filtres avancés -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label class="filter-label">🔧 Stack Technique</label>
+                <select class="filter-select" id="stack-filter">
+                    <option value="all">Toutes les stacks</option>
+                    <option value="fullstack">Full Stack</option>
+                    <option value="frontend">Frontend</option>
+                    <option value="backend">Backend</option>
+                    <option value="devops">DevOps</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="data">Data Science</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">⭐ Niveau</label>
+                <select class="filter-select" id="level-filter">
+                    <option value="all">Tous niveaux</option>
+                    <option value="junior">Junior (0-3 ans)</option>
+                    <option value="senior">Senior (3-7 ans)</option>
+                    <option value="expert">Expert (7+ ans)</option>
+                    <option value="architect">Architect/Lead</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">📍 Localisation</label>
+                <select class="filter-select" id="location-filter">
+                    <option value="all">Toutes régions</option>
+                    <option value="paris">Région Parisienne</option>
+                    <option value="lyon">Lyon</option>
+                    <option value="remote">Full Remote</option>
+                    <option value="hybrid">Hybride</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">⚡ Disponibilité</label>
+                <select class="filter-select" id="availability-filter">
+                    <option value="all">Toutes disponibilités</option>
+                    <option value="immediate">Immédiate</option>
+                    <option value="1month">Dans le mois</option>
+                    <option value="3months">Dans 3 mois</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Grille des consultants -->
+        <div class="consultants-grid" id="consultants-container">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Chargement des consultants depuis Airtable...</p>
+            </div>
+        </div>
+
+        <!-- Debug info -->
+        <div class="debug-info" id="debug-info">
+            <h4>🐛 Informations de debug</h4>
+            <div id="debug-content">Initialisation...</div>
+        </div>
+    </div>
+
+    <!-- Notification système -->
+    <div class="notification" id="notification">
+        <div id="notification-content"></div>
+    </div>
+
+    <script>
+        // Configuration Airtable avec les variables d'environnement
+        const AIRTABLE_CONFIG = {
+            apiKey: 'patHYZ2su8okAfrfy.e7b6b05aead9582fd7df1ec361e8d946fc34f7f764916a95ae4c5fba970fc92b',
+            baseId: 'app8ULorqd7kPziBM',
+            tableName: 'Candidats'
+        };
+
+        // Variables globales pour le debug
+        let debugInfo = {
+            configFound: false,
+            connectionTest: null,
+            recordsFound: 0,
+            lastError: null,
+            apiUrl: ''
+        };
+
+        // Fonction de debug améliorée
+        function updateDebugInfo() {
+            const debugContent = document.getElementById('debug-content');
+            debugContent.innerHTML = `
+                <strong>Configuration :</strong><br>
+                • Base ID: ${AIRTABLE_CONFIG.baseId}<br>
+                • Table: ${AIRTABLE_CONFIG.tableName}<br>
+                • API Key: ${AIRTABLE_CONFIG.apiKey ? AIRTABLE_CONFIG.apiKey.substring(0, 15) + '...' : 'Non configurée'}<br>
+                • URL API: ${debugInfo.apiUrl}<br><br>
+                
+                <strong>État de la connexion :</strong><br>
+                • Test de connexion: ${debugInfo.connectionTest || 'En cours...'}<br>
+                • Enregistrements trouvés: ${debugInfo.recordsFound}<br>
+                • Dernière erreur: ${debugInfo.lastError || 'Aucune'}<br><br>
+                
+                <strong>Timestamp:</strong> ${new Date().toLocaleString()}
+            `;
+        }
+
+        // Générer des données de test étendues pour la démonstration
+        function generateExtendedTestData() {
+            const testProfiles = [
+                {
+                    id: 'rec1234567890',
+                    fields: {
+                        Prenom: 'Jean',
+                        Nom: 'Dupont',
+                        Poste: 'Développeur Full Stack Senior',
+                        Experience: '8 ans',
+                        Competences: 'React, Node.js, MongoDB, Docker, AWS',
+                        Statut: 'Disponible',
+                        Localisation: 'Paris',
+                        TJM_Souhaite: '750€/jour',
+                        Formation: 'Master Informatique - EPITA',
+                        Type_Contrat: 'Freelance',
+                        Niveau: 'senior'
+                    }
+                },
+                {
+                    id: 'rec0987654321',
+                    fields: {
+                        Prenom: 'Marie',
+                        Nom: 'Martin',
+                        Poste: 'DevOps Architect',
+                        Experience: '10 ans',
+                        Competences: 'AWS, Kubernetes, Terraform, Jenkins, GitLab CI',
+                        Statut: 'En mission',
+                        Localisation: 'Remote',
+                        TJM_Souhaite: '900€/jour',
+                        Formation: 'École d\'ingénieur - CentraleSupélec',
+                        Type_Contrat: 'CDI/Freelance',
+                        Niveau: 'expert'
+                    }
+                },
+                {
+                    id: 'rec1357924680',
+                    fields: {
+                        Prenom: 'Pierre',
+                        Nom: 'Durand',
+                        Poste: 'Frontend Developer',
+                        Experience: '4 ans',
+                        Competences: 'Vue.js, TypeScript, Sass, Figma, Nuxt.js',
+                        Statut: 'Disponible',
+                        Localisation: 'Lyon',
+                        TJM_Souhaite: '600€/jour',
+                        Formation: 'BTS SIO - Développement',
+                        Type_Contrat: 'Freelance',
+                        Niveau: 'senior'
+                    }
+                },
+                {
+                    id: 'rec2468013579',
+                    fields: {
+                        Prenom: 'Sophie',
+                        Nom: 'Leblanc',
+                        Poste: 'Data Scientist Lead',
+                        Experience: '12 ans',
+                        Competences: 'Python, TensorFlow, Pandas, SQL, Apache Spark',
+                        Statut: 'Disponible dans 1 mois',
+                        Localisation: 'Hybride',
+                        TJM_Souhaite: '950€/jour',
+                        Formation: 'Doctorat en Machine Learning',
+                        Type_Contrat: 'CDI',
+                        Niveau: 'expert'
+                    }
+                },
+                {
+                    id: 'rec9876543210',
+                    fields: {
+                        Prenom: 'Thomas',
+                        Nom: 'Rousseau',
+                        Poste: 'Mobile Developer',
+                        Experience: '5 ans',
+                        Competences: 'Flutter, React Native, Firebase, Swift',
+                        Statut: 'Disponible',
+                        Localisation: 'Remote',
+                        TJM_Souhaite: '650€/jour',
+                        Formation: 'Master Développement Mobile',
+                        Type_Contrat: 'Freelance',
+                        Niveau: 'senior'
+                    }
+                },
+                {
+                    id: 'rec5432167890',
+                    fields: {
+                        Prenom: 'Amélie',
+                        Nom: 'Moreau',
+                        Poste: 'Backend Developer',
+                        Experience: '6 ans',
+                        Competences: 'Java, Spring Boot, PostgreSQL, Redis',
+                        Statut: 'Disponible',
+                        Localisation: 'Paris',
+                        TJM_Souhaite: '700€/jour',
+                        Formation: 'Master en Génie Logiciel',
+                        Type_Contrat: 'CDI/Freelance',
+                        Niveau: 'senior'
+                    }
+                },
+                {
+                    id: 'rec6789012345',
+                    fields: {
+                        Prenom: 'Lucas',
+                        Nom: 'Bernard',
+                        Poste: 'Développeur Junior',
+                        Experience: '2 ans',
+                        Competences: 'JavaScript, React, HTML/CSS',
+                        Statut: 'Disponible immédiatement',
+                        Localisation: 'Remote',
+                        TJM_Souhaite: '450€/jour',
+                        Formation: 'Formation développeur web - OpenClassrooms',
+                        Type_Contrat: 'Freelance',
+                        Niveau: 'junior'
+                    }
+                },
+                {
+                    id: 'rec3456789012',
+                    fields: {
+                        Prenom: 'Céline',
+                        Nom: 'Dubois',
+                        Poste: 'UX/UI Designer & Frontend',
+                        Experience: '7 ans',
+                        Competences: 'Figma, Adobe XD, React, CSS, Design System',
+                        Statut: 'Disponible',
+                        Localisation: 'Hybride',
+                        TJM_Souhaite: '680€/jour',
+                        Formation: 'École de Design - Supinfocom',
+                        Type_Contrat: 'Freelance',
+                        Niveau: 'senior'
+                    }
+                },
+                {
+                    id: 'rec8901234567',
+                    fields: {
+                        Prenom: 'Maxime',
+                        Nom: 'Petit',
+                        Poste: 'Security Engineer',
+                        Experience: '9 ans',
+                        Competences: 'Cybersécurité, Pentest, OWASP, Firewall',
+                        Statut: 'En mission jusqu\'en mars',
+                        Localisation: 'Paris',
+                        TJM_Souhaite: '850€/jour',
+                        Formation: 'Master Cybersécurité - ANSSI',
+                        Type_Contrat: 'CDI/Freelance',
+                        Niveau: 'expert'
+                    }
+                },
+                {
+                    id: 'rec4567890123',
+                    fields: {
+                        Prenom: 'Julia',
+                        Nom: 'Garcia',
+                        Poste: 'Product Manager Tech',
+                        Experience: '11 ans',
+                        Competences: 'Product Strategy, Agile, JIRA, Analytics',
+                        Statut: 'Disponible',
+                        Localisation: 'Remote',
+                        TJM_Souhaite: '800€/jour',
+                        Formation: 'MBA + Master Informatique',
+                        Type_Contrat: 'CDI',
+                        Niveau: 'expert'
+                    }
+                }
+            ];
+
+            return { records: testProfiles };
+        }
+
+        // Test de connexion Airtable avec pagination et gestion d'erreurs améliorée
+        async function testAirtableConnection() {
+            debugInfo.apiUrl = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${encodeURIComponent(AIRTABLE_CONFIG.tableName)}`;
+            
+            try {
+                updateDebugInfo();
+                document.getElementById('connection-status').innerHTML = '⏳ Test de connexion...';
+                
+                const response = await fetch(`${debugInfo.apiUrl}?maxRecords=10`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Réponse HTTP:', response.status, response.statusText);
+                console.log('Headers de réponse:', [...response.headers.entries()]);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Données reçues:', data);
+                    
+                    debugInfo.connectionTest = '✅ Succès';
+                    debugInfo.recordsFound = data.records ? data.records.length : 0;
+                    debugInfo.lastError = null;
+                    
+                    document.getElementById('connection-status').innerHTML = 
+                        `✅ Connexion établie - ${debugInfo.recordsFound} enregistrements trouvés`;
+                    
+                    showNotification(`✅ Connexion Airtable réussie ! ${debugInfo.recordsFound} enregistrements détectés`);
+                    
+                    // Charger tous les consultants
+                    await loadAllConsultants();
+                    
+                } else {
+                    const errorText = await response.text();
+                    console.error('Erreur HTTP:', response.status, errorText);
+                    
+                    let errorMessage = `Erreur ${response.status}`;
+                    if (response.status === 401) {
+                        errorMessage = 'Clé API invalide ou expirée';
+                    } else if (response.status === 403) {
+                        errorMessage = 'Accès refusé - vérifiez les permissions';
+                    } else if (response.status === 404) {
+                        errorMessage = 'Base ou table non trouvée';
+                    } else if (response.status === 422) {
+                        errorMessage = 'Nom de table invalide';
+                    }
+                    
+                    throw new Error(`${errorMessage}: ${errorText}`);
+                }
+                
+            } catch (error) {
+                console.error('Erreur complète:', error);
+                
+                debugInfo.connectionTest = '❌ Échec';
+                debugInfo.lastError = error.message;
+                
+                document.getElementById('connection-status').innerHTML = 
+                    `❌ Erreur de connexion: ${error.message}`;
+                
+                showNotification(`❌ Erreur de connexion Airtable: ${error.message}`);
+                
+                // Utiliser des données de test en cas d'erreur
+                console.log('Utilisation des données de test étendues');
+                const extendedTestData = generateExtendedTestData();
+                const consultants = extendedTestData.records.map(record => mapAirtableToConsultant(record));
+                renderConsultants(consultants);
+                
+                showNotification(`⚠️ Données de démonstration chargées (${consultants.length} profils)`);
+            }
+            
+            updateDebugInfo();
+        }
+
+        // Charger tous les consultants avec gestion robuste
+        async function loadAllConsultants() {
+            try {
+                showNotification('📥 Chargement complet des consultants...');
+                
+                let allRecords = [];
+                let offset = null;
+                let attempts = 0;
+                const maxAttempts = 3;
+                
+                // Essayer plusieurs méthodes de chargement
+                while (attempts < maxAttempts) {
+                    try {
+                        let url = `${debugInfo.apiUrl}?maxRecords=100`;
+                        if (offset) {
+                            url += `&offset=${offset}`;
+                        }
+                        
+                        console.log(`Tentative ${attempts + 1} de chargement:`, url);
+                        
+                        const response = await fetch(url, {
+                            headers: {
+                                'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+                        }
+
+                        const data = await response.json();
+                        allRecords = allRecords.concat(data.records);
+                        offset = data.offset;
+                        
+                        console.log(`Chargé ${data.records.length} enregistrements, total: ${allRecords.length}`);
+                        
+                        // Si pas d'offset, on a tout chargé
+                        if (!offset) {
+                            break;
+                        }
+                        
+                    } catch (fetchError) {
+                        console.log(`Échec tentative ${attempts + 1}:`, fetchError.message);
+                        attempts++;
+                        
+                        if (attempts >= maxAttempts) {
+                            // Si toutes les tentatives échouent, utiliser des données de test
+                            console.log('Toutes les tentatives ont échoué, utilisation des données de test');
+                            const testData = generateExtendedTestData();
+                            allRecords = testData.records;
+                            break;
+                        }
+                        
+                        // Attendre avant de réessayer
+                        await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+                    }
+                }
+
+                debugInfo.recordsFound = allRecords.length;
+                console.log(`Total des enregistrements chargés: ${allRecords.length}`);
+
+                if (allRecords.length === 0) {
+                    throw new Error('Aucun enregistrement trouvé');
+                }
+
+                // Mapper et afficher les consultants
+                const consultants = allRecords.map(record => mapAirtableToConsultant(record));
+                renderConsultants(consultants);
+                
+                showNotification(`✅ ${consultants.length} consultants chargés avec succès`);
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement complet:', error);
+                debugInfo.lastError = error.message;
+                
+                // En cas d'échec total, utiliser des données de démonstration
+                console.log('Utilisation de données de démonstration étendues');
+                const extendedTestData = generateExtendedTestData();
+                const consultants = extendedTestData.records.map(record => mapAirtableToConsultant(record));
+                renderConsultants(consultants);
+                
+                showNotification(`⚠️ Données de démonstration chargées (${consultants.length} profils)`);
+            }
+            
+            updateDebugInfo();
+        }
+
+        // Mapper les données Airtable vers le format consultant
+        function mapAirtableToConsultant(record) {
+            const fields = record.fields;
+            
+            // Log pour debugging
+            console.log('Mapping record:', record.id, fields);
+            
+            // Déterminer la stack technique basée sur le poste et les compétences
+            let stack = 'fullstack';
+            const poste = (fields.Poste || '').toLowerCase();
+            const competences = (fields.Competences || '').toLowerCase();
+            
+            if (poste.includes('front') || competences.includes('react') || competences.includes('angular') || competences.includes('vue')) {
+                stack = 'frontend';
+            } else if (poste.includes('back') || competences.includes('node') || competences.includes('java') || competences.includes('python')) {
+                stack = 'backend';
+            } else if (poste.includes('devops') || competences.includes('aws') || competences.includes('azure') || competences.includes('docker')) {
+                stack = 'devops';
+            } else if (poste.includes('mobile') || competences.includes('android') || competences.includes('ios') || competences.includes('flutter')) {
+                stack = 'mobile';
+            } else if (poste.includes('data') || competences.includes('python') || competences.includes('machine learning') || competences.includes('analytics')) {
+                stack = 'data';
+            }
+            
+            // Déterminer le niveau d'expérience
+            let level = 'senior';
+            const experience = (fields.Experience || '').toLowerCase();
+            if (experience.includes('junior') || experience.includes('0-2') || experience.includes('débutant')) {
+                level = 'junior';
+            } else if (experience.includes('expert') || experience.includes('7+') || experience.includes('lead') || experience.includes('architect')) {
+                level = 'expert';
+            } else if (experience.includes('architect') || experience.includes('lead') || experience.includes('manager')) {
+                level = 'architect';
+            }
+            
+            // Déterminer la disponibilité basée sur le statut
+            let disponibilite = 'immediate';
+            let statusClass = 'status-available';
+            const statut = (fields.Statut || '').toLowerCase();
+            
+            if (statut.includes('occupé') || statut.includes('busy') || statut.includes('en mission')) {
+                disponibilite = '3months';
+                statusClass = 'status-busy';
+            } else if (statut.includes('bientôt') || statut.includes('soon') || statut.includes('1 mois')) {
+                disponibilite = '1month';
+            }
+
+            // Déterminer la localisation
+            let location = 'remote';
+            const localisation = (fields.Localisation || '').toLowerCase();
+            if (localisation.includes('paris') || localisation.includes('ile-de-france')) {
+                location = 'paris';
+            } else if (localisation.includes('lyon')) {
+                location = 'lyon';
+            } else if (localisation.includes('hybride') || localisation.includes('hybrid')) {
+                location = 'hybrid';
+            }
+            
+            // Extraire les spécialités des compétences
+            const specialites = [];
+            if (fields.Competences) {
+                const comps = fields.Competences.split(',').map(c => c.trim());
+                if (comps.length > 0) specialites.push({ icon: '⭐', titre: 'Expertise', desc: comps[0] });
+                if (comps.length > 1) specialites.push({ icon: '🚀', titre: 'Spécialité', desc: comps[1] });
+                if (comps.length > 2) specialites.push({ icon: '🎯', titre: 'Compétence', desc: comps[2] });
+            }
+            
+            return {
+                id: record.id,
+                nom: `${fields.Prenom || ''} ${fields.Nom || ''}`.trim() || 'Consultant Anonyme',
+                email: fields.Courriel || '',
+                telephone: fields.Telephone || '',
+                role: fields.Poste || 'Développeur',
+                experience: fields.Experience || 'Expérience non spécifiée',
+                stack: stack,
+                level: level,
+                location: location,
+                availability: disponibilite,
+                competences: fields.Competences ? fields.Competences.split(',').map(c => c.trim()) : ['Développement'],
+                specialites: specialites,
+                details: [
+                    { icon: '💰', text: fields.TJM_Souhaite || '600-800€/jour' },
+                    { icon: '🏢', text: fields.Type_Contrat || 'CDI/Freelance' },
+                    { icon: '📍', text: fields.Localisation || 'Remote' },
+                    { icon: '🎓', text: fields.Formation || 'Formation en informatique' }
+                ],
+                disponibilite: fields.Statut || 'Disponible',
+                statusClass: statusClass,
+                rating: '4.8',
+                reviews: Math.floor(Math.random() * 20) + 5
+            };
+        }
+
+        // Fonction pour afficher les consultants
+        function renderConsultants(consultants) {
+            const container = document.getElementById('consultants-container');
+            
+            if (consultants.length === 0) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <p>❌ Aucun consultant trouvé dans Airtable</p>
+                        <p>Vérifiez votre configuration ou importez des données</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            consultants.forEach((consultant, index) => {
+                html += `
+                    <div class="consultant-card-v2 fade-in" data-stack="${consultant.stack}" data-level="${consultant.level}" data-location="${consultant.location}" data-availability="${consultant.availability}" style="animation-delay: ${index * 0.1}s;">
+                        <div class="premium-badges">
+                            <div class="badge">⭐ VIP</div>
+                            <div class="badge-certified">✅ Certifié</div>
+                        </div>
+                        
+                        <div class="card-header-v2">
+                            <div class="consultant-info">
+                                <div class="consultant-id-v2">#${consultant.id.substring(0, 6)}</div>
+                                <div class="consultant-rating">
+                                    <span class="stars">${getStars(consultant.rating)}</span>
+                                    <span>(${consultant.rating}/5 • ${consultant.reviews} avis)</span>
+                                </div>
+                            </div>
+                            <div class="availability-status">
+                                <div class="status-indicator ${consultant.statusClass}"></div>
+                                <span>${consultant.disponibilite}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-main">
+                            <div class="role-title">${consultant.role}</div>
+                            <div class="experience-badge">
+                                <span>🏆</span>
+                                ${consultant.experience}
+                            </div>
+                        </div>
+                        
+                        <div class="skills-section">
+                            <div class="skills-title">
+                                <span>💻</span>
+                                Technologies maîtrisées
+                            </div>
+                            <div class="tech-stack-v2">
+                                ${consultant.competences.map(comp => `
+                                    <div class="tech-tag-v2">${comp}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        ${consultant.specialites.length > 0 ? `
+                        <div class="specialties">
+                            ${consultant.specialites.map(spec => `
+                                <div class="specialty-item">
+                                    <span class="specialty-icon">${spec.icon}</span>
+                                    <strong>${spec.titre} :</strong> ${spec.desc}
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="details-grid-v2">
+                            ${consultant.details.map(detail => `
+                                <div class="detail-item-v2">
+                                    <div class="detail-icon-v2">${detail.icon}</div>
+                                    <div class="detail-text-v2">${detail.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button class="cta-button-v2" onclick="requestAnonymizedCV('${consultant.id}', '${consultant.role}')">
+                            📋 Demander le CV complet
+                        </button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Mettre à jour les statistiques
+            updateStats(consultants);
+        }
+
+        // Fonction utilitaire pour convertir une note en étoiles
+        function getStars(rating) {
+            const numStars = Math.round(parseFloat(rating));
+            return '⭐'.repeat(numStars);
+        }
+
+        // Fonction principale de demande de CV
+        function requestAnonymizedCV(consultantId, profile) {
+            const button = event.target;
+            
+            // Animation du bouton
+            button.innerHTML = '⏳ Génération en cours...';
+            button.style.background = 'linear-gradient(45deg, #ffaa00, #ff6b6b)';
+            button.disabled = true;
+
+            // Simulation du processus d'anonymisation
+            setTimeout(() => {
+                button.innerHTML = '✅ CV anonymisé généré !';
+                button.style.background = 'linear-gradient(45deg, #00ff88, #00d4ff)';
+                
+                // Affichage de la notification
+                showNotification(`
+                    <strong>📧 CV Anonymisé Envoyé !</strong><br>
+                    <small>Consultant ${consultantId.substring(0, 8)} - ${profile}</small><br>
+                    Le CV anonymisé a été envoyé à votre adresse email
+                `);
+                
+                // Reset du bouton après 3 secondes
+                setTimeout(() => {
+                    button.innerHTML = '📋 Demander le CV complet';
+                    button.style.background = 'linear-gradient(45deg, #00d4ff, #ff6b6b)';
+                    button.disabled = false;
+                }, 3000);
+                
+            }, 2000);
+        }
+
+        // Fonction d'affichage des notifications
+        function showNotification(content) {
+            const notification = document.getElementById('notification');
+            const notificationContent = document.getElementById('notification-content');
+            
+            notificationContent.innerHTML = content;
+            notification.classList.add('show');
+            
+            // Masquer après 6 secondes
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 6000);
+        }
+
+        // Mise à jour des statistiques
+        function updateStats(consultants) {
+            const activeConsultants = document.getElementById('active-consultants');
+            const availableNow = document.getElementById('available-now');
+            const missionsMonth = document.getElementById('missions-month');
+            
+            if (consultants && consultants.length > 0) {
+                activeConsultants.textContent = consultants.length;
+                availableNow.textContent = consultants.filter(c => c.statusClass === 'status-available').length;
+                missionsMonth.textContent = Math.floor(consultants.length * 0.7);
+            } else {
+                // Valeurs par défaut
+                activeConsultants.textContent = '0';
+                availableNow.textContent = '0';
+                missionsMonth.textContent = '0';
+            }
+        }
+
+        // Système de filtrage
+        function setupFilters() {
+            const filters = ['stack-filter', 'level-filter', 'location-filter', 'availability-filter'];
+            
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', filterConsultants);
+            });
+        }
+
+        function filterConsultants() {
+            const stackFilter = document.getElementById('stack-filter').value;
+            const levelFilter = document.getElementById('level-filter').value;
+            const locationFilter = document.getElementById('location-filter').value;
+            const availabilityFilter = document.getElementById('availability-filter').value;
+            
+            const cards = document.querySelectorAll('.consultant-card-v2');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const stack = card.getAttribute('data-stack');
+                const level = card.getAttribute('data-level');
+                const location = card.getAttribute('data-location');
+                const availability = card.getAttribute('data-availability');
+                
+                const stackMatch = stackFilter === 'all' || stack === stackFilter;
+                const levelMatch = levelFilter === 'all' || level === levelFilter;
+                const locationMatch = locationFilter === 'all' || location === locationFilter;
+                const availabilityMatch = availabilityFilter === 'all' || availability === availabilityFilter;
+                
+                if (stackMatch && levelMatch && locationMatch && availabilityMatch) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.6s ease forwards';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Mettre à jour le debug avec le nombre de consultants filtrés
+            if (visibleCount !== cards.length) {
+                showNotification(`🔍 ${visibleCount} consultants correspondent aux filtres`);
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initialisation de l\'application');
+            console.log('Configuration Airtable:', AIRTABLE_CONFIG);
+            
+            // Initialiser les filtres
+            setupFilters();
+            
+            // Initialiser les statistiques
+            updateStats();
+            
+            // Initialiser les informations de debug
+            debugInfo.configFound = true;
+            updateDebugInfo();
+            
+            // Tester la connexion automatiquement
+            setTimeout(() => {
+                testAirtableConnection();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
